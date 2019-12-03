@@ -3,7 +3,7 @@
 
 ### Author
 
-**Xiaobo Li** lixiaobo@novogene.com
+**Xiaobo Li**  <lixiaobo@novogene.com>
 
 ### Description
 GO, KEGG and other enrichment analysis for TR project. Version 0.5. 2019-12-3
