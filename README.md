@@ -5,6 +5,15 @@
 
 Examples
 # NovoEnrich 
+
+
+### HOW TO INSTALL **NovoEnrich** ###
+```
+devtools::install_github("bioteller/NovoEnrich")
+library(NovoEnrich)
+```
+
+### HOW TO  do enrich analysis via NovoEnrich ###
 ```
 rm(list = ls())
 library(NovoEnrich)
