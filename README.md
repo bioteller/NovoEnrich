@@ -1,4 +1,4 @@
-# NovoEnrich #
+# NovoEnrich V0.99 alpha #
 #### NovoEnrich for TR project ####
 
 **Xiaobo Li** generated. GO, KEGG and other enrichment analysis for TR project. Version 0.5. 2019-12-3
@@ -34,4 +34,4 @@ KOR <- ne_enrichKEGG(kset = kset,dge = gde)
 ne_plot(KOR,title = "KEGG enrichment",n=25,lab_fix = 30)
 ne_goplot(GOR,title = "GO Enrichment",n=c(10,10,3),fill="p.adjust")
 ```
-> NovoEnrich
+> NovoEnrich 0.90 aftersale of TR
