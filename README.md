@@ -1,20 +1,25 @@
 # NovoEnrich V0.99 alpha #
 #### NovoEnrich for TR project ####
 
-**Xiaobo Li** generated. GO, KEGG and other enrichment analysis for TR project. Version 0.5. 2019-12-3
+### Author
+
+**Xiaobo Li** lixiaobo@novogene.com
+
+### Description
+GO, KEGG and other enrichment analysis for TR project. Version 0.5. 2019-12-3
 
 Examples
 ## NovoEnrich ##
 
 
 ### HOW TO INSTALL **NovoEnrich** ###
-```
+```R
 devtools::install_github("bioteller/NovoEnrich")
 library(NovoEnrich)
 ```
 
 ### HOW TO  do enrich analysis via NovoEnrich ###
-```
+```R
 rm(list = ls())
 library(NovoEnrich)
 
