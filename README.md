@@ -1,10 +1,10 @@
-## NovoEnrich ##
+# NovoEnrich #
 #### NovoEnrich for TR project ####
 
-**Xiaobo Li** generated. Go, KEGG and other enrichment analysis for TR project. Version 0.5. 2019-12-3
+**Xiaobo Li** generated. GO, KEGG and other enrichment analysis for TR project. Version 0.5. 2019-12-3
 
 Examples
-# NovoEnrich 
+## NovoEnrich ##
 
 
 ### HOW TO INSTALL **NovoEnrich** ###
