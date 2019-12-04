@@ -43,7 +43,7 @@ ne_kset <- function(classificationfile){
 }
 
 # read dge
-ne_dge  <- function(DGE_file,lg2fc=0,include=a,pval=1,padj=1) {
+ne_dge  <- function(DGE_file,lg2fc=0,include="a",pval=1,padj=1) {
   dge <- fread(DGE_file,sep = "\t",data.table = F)
   dge <- dge[which(dge$pval < pval & dge$padj < padj),]
   gene_list <- unlist(log2((dge[,2]+1)/(dge[,3]+1)))
