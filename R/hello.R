@@ -6,12 +6,14 @@
 #   Install Package:           'Cmd + Shift + B'
 #   Check Package:             'Cmd + Shift + E'
 #   Test Package:              'Cmd + Shift + T'
+ne_env <- function(){
 library(clusterProfiler,quietly = T)
 library("data.table",quietly = T)
 library(stringr,quietly = T)
 library(ggplot2,quietly = T)
 library(dplyr,quietly = T)
 library(tidyverse,quietly = T)
+}
 testGO <- "../NoveSmart_US/NovoSmart_US.nr/data/classification/GO_classification.xls"
 testKG <- "../NoveSmart_US/NovoSmart_US.nr/data/classification/KEGG_classification.xls"
 DGE <- "../NoveSmart_US/NovoSmart_US.nr/data/DGE/ToDP00vsToDV00.DEG.xls"
@@ -81,6 +83,8 @@ ne_enrichKEGG <- function(kset,dge){
   enrichr_KEGG@result$gene_ratio <- unlist(lapply(enrichr_KEGG@result$GeneRatio, function(x) eval(parse(text=x))))
   return(enrichr_KEGG)
 }
+
+
 # graph
 
 Goplot_prepare <- function(dataset,
@@ -90,7 +94,7 @@ Goplot_prepare <- function(dataset,
   dataset <- as.data.frame(dataset)
   dataset <- dataset[order(dataset[,s_name],decreasing = desc),]
   for (i in ont){
-    tmp <- rbind(tmp,dataset[dataset[,"ontology"] ==i,][1:n[which(ont == i)],])
+    tmp <- rbind(tmp,dataset[dataset[,"ontology"] ==i,][0:n[which(ont == i)],])
   }
   return(tmp)
 }
@@ -99,6 +103,7 @@ ne_goplot <- function(dataset,
                       title="",
                       ont=c("Biological Process","Cellular Component","Molecular Function"),
                       y_name="p.adjust",
+                      x.size=7,
                       # x_name="Description",
                       sep=T,
                       n = c(10,10,10),
@@ -122,7 +127,7 @@ ne_goplot <- function(dataset,
     scale_x_discrete(breaks=d$Description, labels = d$Description2)+
     ggtitle(title)+
     theme(panel.background = element_blank(),
-          axis.text.x = element_text(angle = 60, hjust = 1,size = 7),
+          axis.text.x = element_text(angle = 60, hjust = 1,size = x.size),
           axis.line = element_line(),
           strip.text =  element_text(face = "bold",size = 7,colour = "white"),
           strip.background = element_rect(fill = rgb(0.2,0.2,0.2,0.8),colour = "black"),
@@ -150,8 +155,7 @@ ne_plot <- function(dataset,
   jkl <- sym(y_name)
   d %>%
     mutate(name=fct_reorder(Description,!!jkl,.desc = T)) %>%
-    group_by(ontology) %>%
-    top_n(10) %>%
+    top_n(n) %>%
     ggplot(aes(x=Description,y=!!jkl,fill=!!sym(fill))) +
     geom_bar(stat = "identity",width = 0.8) +
     scale_x_discrete(breaks=d$Description, labels = d$Description2)+
@@ -168,7 +172,34 @@ ne_plot <- function(dataset,
 }
 
 
+if(F) {
+  testGO <- "../NoveSmart_US/NovoSmart_US.nr/data/classification/GO_classification.xls"
+  testKG <- "../NoveSmart_US/NovoSmart_US.nr/data/classification/KEGG_classification.xls"
+  DGE <- "../NoveSmart_US/NovoSmart_US.nr/data/DGE/ToDP00vsToDV00.DEG.xls"
 
+  packageVersion("NovoEnrich")
 
+  gset <- ne_gset(classificationfile = testGO)
+  gde <- ne_dge(DGE_file = DGE,lg2fc = 1,)
+  dge <- gde
+  kset <- ne_kset(classificationfile = testKG)
+
+  GOR <- ne_enrichGO(gset = gset,dge = gde)
+  KOR <- ne_enrichKEGG(kset = kset,dge = gde)
+barplot(GOR$`Molecular Function`,)
+  ne_plot(KOR,title = "KEGG enrichment",n=30,lab_fix = 30,y_name = "Count",fill="Count")
+  ne_goplot(GOR,title = "GO Enrichment",n=c(10,10,8),fill="ontology",lab_fix = 0)
+
+  GSEAOR <- GSEA(gde,TERM2GENE = gset$TERM2GENE[[2]],TERM2NAME = gset$TERM2NAME[[2]],pvalueCutoff = 1)
+  colnames(GSEAOR@result)
+  ridgeplot(GSEAOR)
+  gseaplot(GSEAOR,geneSetID = "GO:0046483")
+  otype(GSEAOR)
+  #GSEAOR@result
+  }
+if (require("NovoEnrich")) {
+  devtools::install_github("bioteller/NovoEnrich")
+  library(NovoEnrich)
+}
 
 
