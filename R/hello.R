@@ -146,18 +146,19 @@ ne_plot <- function(dataset,
                       fill="p.adjust",
                       lab_fix=10,
                       desc=F){
-  if (class(dataset) == "list"){dataset <- rbindlist(lapply(dataset,function(x) as.data.frame(x)))}
-  d <- dataset[order(dataset$p.adjust,decreasing = T),]
+  jkl <- sym(y_name)
+  if (class(dataset) == "list"){d <- dataset[order(dataset$p.adjust,decreasing = T),]}
+  d <- as.data.frame(dataset)
   d$Description2 <- d$Description
   if( lab_fix !=0 ){
-    d$Description2 <- ifelse(nchar(d$Description) > lab_fix, paste0(str_sub(d$Description,1,lab_fix),"..."),d$Description)}
-
+  d$Description2 <- ifelse(nchar(d$Description) > lab_fix, paste0(str_sub(d$Description,1,lab_fix),"..."),d$Description)}
+  dataset <- KOR
+  d <- dataset[order(dataset[,y_name],decreasing = desc),][1:n,]
+  d$Description2 <- ifelse(nchar(d$Description) > lab_fix, paste0(str_sub(d$Description,1,lab_fix),"..."),d$Description)
   d$Description <- factor(d$Description, levels = rev(d$Description))
-  jkl <- sym(y_name)
   d %>%
-    mutate(name=fct_reorder(Description,!!jkl,.desc = T)) %>%
-    top_n(n) %>%
-    ggplot(aes(x=Description,y=!!jkl,fill=!!sym(fill))) +
+    mutate(name=fct_reorder(Description,!!sym(jkl),.desc=T)) %>%
+    ggplot(aes(x=Description,y=!!sym(jkl),fill=!!sym(fill))) +
     geom_bar(stat = "identity",width = 0.8) +
     scale_x_discrete(breaks=d$Description, labels = d$Description2)+
     ggtitle(title)+
@@ -168,7 +169,7 @@ ne_plot <- function(dataset,
           strip.background = element_rect(fill = rgb(0.2,0.2,0.2,0.8),colour = "black"),
           plot.margin = unit(c(1,1,1,1),units = "cm"),
           legend.position="right",
-          plot.title = element_text(hjust = 0.5)) -> ph
+          plot.title = element_text(hjust = 0.5))  -> ph
   return(ph)
 }
 
@@ -188,7 +189,9 @@ if(F) {
   GOR <- ne_enrichGO(gset = gset,dge = gde)
   KOR <- ne_enrichKEGG(kset = kset,dge = gde)
 barplot(GOR$`Molecular Function`,)
-  ne_plot(KOR,title = "KEGG enrichment",n=30,lab_fix = 30,y_name = "Count",fill="Count")
+
+  ne_plot(KOR,title = "KEGG enrichment",n=30,lab_fix = 30,y_name = "pvalue",fill="pvalue",desc=T)
+
   ne_goplot(GOR,title = "GO Enrichment",n=c(10,10,8),fill="ontology",lab_fix = 0)
 
   GSEAOR <- GSEA(gde,TERM2GENE = gset$TERM2GENE[[2]],TERM2NAME = gset$TERM2NAME[[2]],pvalueCutoff = 1)
