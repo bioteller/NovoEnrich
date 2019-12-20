@@ -152,7 +152,6 @@ ne_plot <- function(dataset,
   d$Description2 <- d$Description
   if( lab_fix !=0 ){
   d$Description2 <- ifelse(nchar(d$Description) > lab_fix, paste0(str_sub(d$Description,1,lab_fix),"..."),d$Description)}
-  dataset <- KOR
   d <- dataset[order(dataset[,y_name],decreasing = desc),][1:n,]
   d$Description2 <- ifelse(nchar(d$Description) > lab_fix, paste0(str_sub(d$Description,1,lab_fix),"..."),d$Description)
   d$Description <- factor(d$Description, levels = rev(d$Description))
@@ -190,9 +189,9 @@ if(F) {
   KOR <- ne_enrichKEGG(kset = kset,dge = gde)
 barplot(GOR$`Molecular Function`,)
 
-  ne_plot(KOR,title = "KEGG enrichment",n=30,lab_fix = 30,y_name = "pvalue",fill="pvalue",desc=T)
+  ne_plot(KOR,title = "KEGG enrichment",n=30,lab_fix = 30,y_name = "Count",fill="pvalue",desc=T)
 
-  ne_goplot(GOR,title = "GO Enrichment",n=c(10,10,8),fill="ontology",lab_fix = 0)
+  ne_goplot(GOR,title = "GO Enrichment",n=c(10,10,8),fill="ontology",lab_fix = 10,y_name = "Count",desc = T)
 
   GSEAOR <- GSEA(gde,TERM2GENE = gset$TERM2GENE[[2]],TERM2NAME = gset$TERM2NAME[[2]],pvalueCutoff = 1)
   colnames(GSEAOR@result)
